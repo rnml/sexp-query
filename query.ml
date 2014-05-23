@@ -47,29 +47,19 @@ let rec run_one t s =
   | Field f       -> field f s
   | Test t ->
     let result = run_one t s in
-    if Sequence.is_empty result
-    then fail
-    else yield s
+    if Sequence.is_empty result then fail else yield s
   | Not t ->
     let result = run_one t s in
-    if Sequence.is_empty result
-    then yield s
-    else fail
+    if Sequence.is_empty result then yield s else fail
   | Or (t1, t2) ->
     let result = run_one t1 s in
-    if not (Sequence.is_empty result)
-    then result
-    else run_one t2 s
+    if not (Sequence.is_empty result) then result else run_one t2 s
   | And (t1, t2) ->
     let result = run_one t1 s in
-    if not (Sequence.is_empty result)
-    then run_one t2 s
-    else fail
+    if not (Sequence.is_empty result) then run_one t2 s else fail
   | If (t1, t2, t3) ->
     let result = run_one t1 s in
-    if not (Sequence.is_empty result)
-    then run_one t2 s
-    else run_one t3 s
+    if not (Sequence.is_empty result) then run_one t2 s else run_one t3 s
   | Quote q ->
     match quote q s with
     | Col ss -> ss
