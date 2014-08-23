@@ -23,6 +23,7 @@ type t =
   | Fail
   | Field of string
   | If of t * t * t
+  | Index of int
   | Not of t
   | Or of t * t
   | Pipe of t * t

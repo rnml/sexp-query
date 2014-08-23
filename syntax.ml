@@ -35,6 +35,7 @@ module T = struct
     | Fail
     | Field of string
     | If of t * t * t
+    | Index of int
     | Not of t
     | Or of t * t
     | Pipe of t * t
@@ -54,6 +55,7 @@ module T = struct
     | Not t -> Sexp.List [Sexp.Atom "if"; sexp_of_t t]
     | Test t -> Sexp.List [Sexp.Atom "test"; sexp_of_t t]
     | Wrap t -> Sexp.List [Sexp.Atom "wrap"; sexp_of_t t]
+    | Index i -> Sexp.List [Sexp.Atom "index"; Int.sexp_of_t i]
     | Quote q ->
       Sexp.List [Sexp.Atom "quote"; Template.sexp_of_t (Antiquote.sexp_of_t sexp_of_t) q]
     | And (t1, t2) ->
@@ -105,7 +107,7 @@ module T = struct
       List.fold_right args ~init:This ~f:(fun s acc -> Pipe (t_of_sexp s, acc))
     | Sexp.List (Sexp.Atom "cat" :: args) ->
       List.fold_right args ~init:Fail ~f:(fun s acc -> Cat (t_of_sexp s, acc))
-    | s -> failwiths "unrecognized query syntax" s Fn.id
+    | s -> failwiths "unrecognized query syntax" s (fun x -> x)
 
 end
 include T

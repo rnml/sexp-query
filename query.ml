@@ -1,4 +1,7 @@
+
+module Save_sequence = Sequence
 open Std_internal
+module Sequence = Save_sequence
 
 open Syntax
 
@@ -25,6 +28,13 @@ let field foo = function
       Sequence.empty
   )
 
+let index i = function
+  | Sexp.Atom _ -> fail
+  | Sexp.List ss ->
+    match List.nth ss i with
+    | None -> fail
+    | Some x -> Sequence.return x
+
 let atomic = function
   | Sexp.Atom _ as s -> yield s
   | Sexp.List _ -> fail
@@ -45,6 +55,7 @@ let rec run_one t s =
   | Atomic        -> atomic s
   | Wrap t        -> yield (Sexp.List (Sequence.to_list (run_one t s)))
   | Field f       -> field f s
+  | Index i       -> index i s
   | Test t ->
     let result = run_one t s in
     if Sequence.is_empty result then fail else yield s

@@ -10,25 +10,25 @@ and 'a t =
   | Return of 'a
 
 and 'a tail =
-  | Nil
-  | Append of (unit -> 'a t) * 'a tail
+  | TNil
+  | TAppend of (unit -> 'a t) * 'a tail
 
 let rec plug : type e. e t -> e tail -> e seq =
   fun t tail ->
     match t with
     | Empty -> force_tail tail
     | Return x -> Cons (x, tail)
-    | Append (m, f) -> plug m (Append (f, tail))
+    | Append (m, f) -> plug m (TAppend (f, tail))
 
 and force_tail : type e. e tail -> e seq = function
-  | Nil -> Done
-  | Append (f, k) -> plug (f ()) k
+  | TNil -> Done
+  | TAppend (f, k) -> plug (f ()) k
 
 let empty = Empty
 
 let append m f = Append (m, f)
 
-let to_seq t = plug t Nil
+let to_seq t = plug t TNil
 
 let rec of_list = function
   | [] -> Empty
