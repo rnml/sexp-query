@@ -95,6 +95,7 @@ module T = struct
     | Sexp.List [Sexp.Atom "field"; Sexp.Atom foo] -> Field foo
     | Sexp.List [Sexp.Atom "test"; t] -> Test (t_of_sexp t)
     | Sexp.List [Sexp.Atom "wrap"; t] -> Wrap (t_of_sexp t)
+    | Sexp.List [Sexp.Atom "index"; i] -> Index (Int.t_of_sexp i)
     | Sexp.List [Sexp.Atom "if"; t1; t2; t3] ->
       If (t_of_sexp t1, t_of_sexp t2, t_of_sexp t3)
     | Sexp.List [Sexp.Atom "quote"; q] ->
