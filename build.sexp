@@ -7,7 +7,6 @@
    sequence
    syntax
    query
-   query2
    main
  ))
  (target (exe sexp-query)))
